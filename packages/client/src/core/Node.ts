@@ -1,4 +1,5 @@
 import { Matrix3 } from "./Matrix2d";
+import { Rect } from "./rect";
 import { Vec2 } from "./vec";
 
 export class Node {
@@ -41,7 +42,19 @@ export class Node {
     public children: Node[] = [];
 
     matrix: Matrix3 = new Matrix3();
-    degree: number = 0;
+    _degree: number = 0;
+    get degree() {
+        return this._degree;
+    }
+    set degree(val: number) {
+        if(val == this._degree){
+            return;
+        }
+        this._degree = val;
+        this.isDirty = true;
+    }
+
+    rect: Rect = new Rect();
 
     public constructor(name: string = '') {
         this.name = name;
@@ -79,7 +92,7 @@ export class Node {
                 // this._position.y = this.parent.position.y + this.localPosition.y;
                 this.parent.matrix.apply(this.localPosition, this._position);
                 
-                this.matrix.set(this.scale.x, this.scale.y, this.degree, this.localPosition.x, this.localPosition.y);
+                this.matrix.set(this.scale.x, this.scale.y, this._degree, this.localPosition.x, this.localPosition.y);
                 Matrix3.multi(this.parent.matrix, this.matrix, this.matrix);
                 
                 this.scale.x *= this.parent.scale.x;
@@ -90,6 +103,13 @@ export class Node {
                 this.children[i].isDirty = true;
                 this.children[i].update();
             }
+        }
+    }
+
+    public onClick(event: MouseEvent) {
+        // event.clientX, event.clientY
+        if(this.rect.intersect(event.clientX, event.clientY)) {
+            
         }
     }
 }

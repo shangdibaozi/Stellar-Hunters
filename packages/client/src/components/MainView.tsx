@@ -5,6 +5,7 @@ import { Sprite } from "../core/Sprite";
 import { Node } from "../core/Node";
 import { Label } from "../core/Label";
 import { Vec2 } from "../core/vec";
+import { Global, View } from "../Global";
 
 interface IProp {
     canvas: HTMLCanvasElement;
@@ -21,6 +22,8 @@ export class MainView {
     rootNode: Node = new Node();
 
     renderObjs: (Sprite|Label)[] = [];
+
+    playBtn: Node = null!;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -61,8 +64,10 @@ export class MainView {
         imgBoard.node.setAnchor(0, 0);
         imgBoard.node.setLocalPosition(90, 10);
 
-        let playBtn = new Sprite('../assets/main/PLAY.png');
-        playBtn.node.setLocalPosition(170, 190);
+        let playBtnBg = new Sprite('../assets/main/PLAY.png');
+        playBtnBg.node.setLocalPosition(170, 190);
+        this.playBtn = playBtnBg.node;
+        
 
         let desc = new Label('description description description description description description description description description', 22, 280);
         // let desc = new Label('descriptdes', 22, 111);
@@ -73,11 +78,11 @@ export class MainView {
         this.renderObjs.push(lblName);
         this.renderObjs.push(imgFree);
         this.renderObjs.push(imgBoard);
-        this.renderObjs.push(playBtn);
+        this.renderObjs.push(playBtnBg);
         this.renderObjs.push(desc);
 
         node.addChild(img1.node);
-        imgBoard.node.addChild(playBtn.node);
+        imgBoard.node.addChild(playBtnBg.node);
         imgBoard.node.addChild(desc.node);
         img1.node.addChild(lblName.node);
         img1.node.addChild(imgFree.node);
@@ -154,5 +159,20 @@ export class MainView {
         for(let i = 0; i < this.renderObjs.length; i++) {
             this.renderObjs[i].draw(this.ctx);
         }
+    }
+
+    public onMouseDown(x: number, y: number) {
+        if(this.playBtn.rect.intersect(x, y)) {
+            console.log('---');
+            Global.currView = View.Game;
+        }
+    }
+
+    public  onMouseUp(x: number, y: number) { 
+
+    }
+
+    public  onMouseMove(x: number, y: number) {
+
     }
 }
