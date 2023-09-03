@@ -5,6 +5,10 @@ export class Matrix3 {
 
     static D2R = Math.PI / 180;
 
+    public get angle() {
+        return Math.asin(this.elem[1]);
+    }
+
     public set(sx: number, sy: number, degree: number, tx: number, ty: number) {
         let angle = degree * Matrix3.D2R;
         this.setScale(sx, sy).setRotate(angle).setTranslate(tx, ty);
@@ -52,4 +56,5 @@ export class Matrix3 {
         out.elem[5] = aMatrix.elem[3] * bMatrix.elem[2] + aMatrix.elem[4] * bMatrix.elem[5] + aMatrix.elem[5] * bMatrix.elem[8];
         out.elem[8] = aMatrix.elem[6] * bMatrix.elem[2] + aMatrix.elem[7] * bMatrix.elem[5] + aMatrix.elem[8] * bMatrix.elem[8];
     }
+
 }

@@ -33,10 +33,11 @@ export class Sprite {
         this.node.rect.position.x = x;
         this.node.rect.position.y = y;
         
+        let angle = this.node.matrix.angle;
         ctx.translate(this.node.position.x, this.node.position.y);
-        ctx.rotate(this.node.degree * Matrix3.D2R);
+        ctx.rotate(angle);
         ctx.drawImage(this.img, -width * this.node.anchor.x, -height * this.node.anchor.y, width, height);
-        ctx.rotate(-this.node.degree * Matrix3.D2R);
+        ctx.rotate(-angle);
         ctx.translate(-this.node.position.x, -this.node.position.y);
     }
 }
