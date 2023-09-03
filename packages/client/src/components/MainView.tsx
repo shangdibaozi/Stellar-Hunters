@@ -4,6 +4,7 @@ import { PlanetCanvas } from "./PlanetCanvas";
 import { Sprite } from "../core/Sprite";
 import { Node } from "../core/Node";
 import { Label } from "../core/Label";
+import { Vec2 } from "../core/vec";
 
 interface IProp {
     canvas: HTMLCanvasElement;
@@ -16,7 +17,10 @@ export class MainView {
     ctx: CanvasRenderingContext2D;
 
     planetRootNode: Node = new Node();
-    plantes: (Sprite|Label)[] = [];
+
+    rootNode: Node = new Node();
+
+    renderObjs: (Sprite|Label)[] = [];
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -25,106 +29,130 @@ export class MainView {
         this.init();
     }
 
+    createPlanet(x: number, y: number, scale: number, name: string) {
+        let planet = new Sprite('../assets/main/planet.png');
+        planet.node.setLocalPosition(x, y);
+        planet.node.setScale(scale, scale);
+        this.planetRootNode.addChild(planet.node);
+        this.renderObjs.push(planet);
+        if(name.length > 0) {
+            let planetName = new Label(name, 22);
+            planetName.color = '#ffffff';
+            planetName.node.setAnchor(0.5, 0.5);
+            planetName.node.setLocalPosition(0, 110);
+            planet.node.addChild(planetName.node);
+            this.renderObjs.push(planetName);
+        }
+        return planet.node;
+    }
+
+    createPlanetDesc() {
+        let node = new Node();
+        let img1 = new Sprite('../assets/main/mark.png');
+        img1.node.setAnchor(0, 0.5);
+        let lblName = new Label('NAME', 36);
+        lblName.node.setAnchor(0.5, 1);
+        lblName.node.setLocalPosition(170, -5);
+        let imgFree = new Sprite('../assets/main/FREE.png');
+        imgFree.node.setAnchor(0.5, 1);
+        imgFree.node.setLocalPosition(280, -5);
+
+        let imgBoard = new Sprite('../assets/main/board.png');
+        imgBoard.node.setAnchor(0, 0);
+        imgBoard.node.setLocalPosition(90, 10);
+
+        let playBtn = new Sprite('../assets/main/PLAY.png');
+        playBtn.node.setLocalPosition(170, 190);
+
+        let desc = new Label('description description description description description description description description description', 22, 280);
+        // let desc = new Label('descriptdes', 22, 111);
+        desc.node.setAnchor(0.5, 0);
+        desc.node.setLocalPosition(170, 50);
+
+        this.renderObjs.push(img1);
+        this.renderObjs.push(lblName);
+        this.renderObjs.push(imgFree);
+        this.renderObjs.push(imgBoard);
+        this.renderObjs.push(playBtn);
+        this.renderObjs.push(desc);
+
+        node.addChild(img1.node);
+        imgBoard.node.addChild(playBtn.node);
+        imgBoard.node.addChild(desc.node);
+        img1.node.addChild(lblName.node);
+        img1.node.addChild(imgFree.node);
+        img1.node.addChild(imgBoard.node);
+        return node;
+    }
+
     init() {
-        // let background = new Sprite('../assets/main/background.png');
+        let centerPos = new Vec2(this.canvas.width / 2, this.canvas.height / 2);
+
+        this.rootNode.addChild(this.planetRootNode);
+
+        let background = new Sprite('../assets/main/background.png');
+        background.node.setLocalPosition(centerPos.x, centerPos.y);
+        this.renderObjs.push(background);
+        this.rootNode.addChild(background.node);
         
-        // let head_bg = new Sprite('../assets/main/head_background.png');
-        // head_bg.node.setPosition(0, 0);
+        let head_bg = new Sprite('../assets/main/head_background.png');
+        head_bg.node.setLocalPosition(0, 0);
+        this.renderObjs.push(head_bg);
         
-        // let head_frame = new Sprite('../assets/main/head_frame.png');
-        // head_frame.node.setPosition(0, 0);
+        let head_frame = new Sprite('../assets/main/head_frame.png');
+        head_frame.node.setLocalPosition(0, 0);
+        this.renderObjs.push(head_frame);
+        this.planetRootNode.addChild(head_frame.node);
 
-        // let name_bg = new Sprite('../assets/main/name_background.png');
-        // name_bg.node.setAnchor(0, 0.5);
-        // name_bg.node.setLocalPosition(50, -20);
+        let name_bg = new Sprite('../assets/main/name_background.png');
+        name_bg.node.setAnchor(0, 0.5);
+        name_bg.node.setLocalPosition(50, -20);
+        this.renderObjs.push(name_bg);
+        this.planetRootNode.addChild(name_bg.node);
 
-        // let playerName = new Label('Player Name', 22);
-        // playerName.node.setAnchor(0.5, 0.5);
-        // playerName.node.setLocalPosition(86.5, 0);
-        // name_bg.node.addChild(playerName.node);
+        let playerName = new Label('Player Name', 22);
+        playerName.node.setAnchor(0.5, 0.5);
+        playerName.node.setLocalPosition(86.5, -2);
+        name_bg.node.addChild(playerName.node);
+        this.renderObjs.push(playerName);
 
-        // let coin = new Sprite('../assets/game/coin1.png');
-        // coin.node.setAnchor(0, 0.5);
-        // coin.node.setLocalPosition(50, 20);
+        let coin = new Sprite('../assets/game/coin1.png');
+        coin.node.setAnchor(0, 0.5);
+        coin.node.setLocalPosition(50, 20);
+        this.renderObjs.push(coin);
 
-        // let coinLbl = new Label('12345', 22);
-        // coinLbl.node.setAnchor(0, 0.5);
-        // coinLbl.node.setLocalPosition(30, 0);
-        // coin.node.addChild(coinLbl.node);
+        let coinLbl = new Label('12345', 22);
+        coinLbl.node.setAnchor(0, 0.5);
+        coinLbl.node.setLocalPosition(30, 0);
+        coin.node.addChild(coinLbl.node);
+        this.renderObjs.push(coinLbl);
 
-        // let headNode = new Node('headNode');
-        // headNode.setPosition(50, 50);
-        // headNode.addChild(head_bg.node);
-        // headNode.addChild(head_frame.node);
-        // headNode.addChild(name_bg.node);
-        // headNode.addChild(coin.node);
+        let headNode = new Node('headNode');
+        this.planetRootNode.addChild(headNode);
+        headNode.setLocalPosition(50, 50);
+        headNode.addChild(head_bg.node);
+        headNode.addChild(head_frame.node);
+        headNode.addChild(name_bg.node);
+        headNode.addChild(coin.node);
 
+        this.createPlanet(200, 300, 0.75, '');
+        let selectPlanet = this.createPlanet(340, 450, 0.9, '');
+        this.createPlanet(500, 300, 0.75, '');
+        this.createPlanet(1000, 270, 0.5, 'Planet1');
+        this.createPlanet(1220, 200, 0.5, 'Planet2');
+        this.createPlanet(1040, 540, 0.5, 'Planet3');
+        this.createPlanet(1450, 340, 0.5, 'Planet4');
+        this.createPlanet(1320, 500, 0.5, 'Planet5');
 
-        // let planet0 = new Sprite('../assets/main/planet.png');
-        // planet0.node.setPosition(200, 300);
-        // planet0.node.setScale(0.75, 0.75);
-        // planetRootNode.addChild(planet0.node);
-        // plantes.push(planet0);
-
-        // let planet1 = new Sprite('../assets/main/planet.png');
-        // planet1.node.setPosition(340, 450);
-        // planet1.node.setScale(0.9, 0.9);
-        // planetRootNode.addChild(planet1.node);
-        // plantes.push(planet1);
-
-        // let planet2 = new Sprite('../assets/main/planet.png');
-        // planet2.node.setPosition(500, 300);
-        // planet2.node.setScale(0.75, 0.75);
-        // planetRootNode.addChild(planet2.node);
-        // plantes.push(planet2);
-
-        let planet3 = new Sprite('../assets/main/head_background.png');
-        // planet3.node.setLocalPosition(1000, 270);
-        planet3.node.setAnchor(0, 0)
-        planet3.node.setLocalPosition(0, 0);
-        planet3.node.setScale(1, 1);
-        this.planetRootNode.addChild(planet3.node);
-        this.plantes.push(planet3);
-        let planet3Name = new Label('Planet', 22);
-        planet3Name.node.setAnchor(0, 0);
-        planet3Name.node.setLocalPosition(0, 30);
-        planet3.node.addChild(planet3Name.node);
-        this.plantes.push(planet3Name);
-
-        // let planet4 = new Sprite('../assets/main/planet.png');
-        // planet4.node.setPosition(1200, 200);
-        // planet4.node.setScale(0.5, 0.5);
-        // planetRootNode.addChild(planet4.node);
-        // plantes.push(planet4);
-
-        // let planet5 = new Sprite('../assets/main/planet.png');
-        // planet5.node.setPosition(1020, 500);
-        // planet5.node.setScale(0.5, 0.5);
-        // planetRootNode.addChild(planet5.node);
-        // plantes.push(planet5);
-
-        // let planet6 = new Sprite('../assets/main/planet.png');
-        // planet6.node.setPosition(1300, 450);
-        // planet6.node.setScale(0.5, 0.5);
-        // planetRootNode.addChild(planet6.node);
-        // plantes.push(planet6);
+        let markUI = this.createPlanetDesc();
+        selectPlanet.addChild(markUI);
     }
 
     public run() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            // headNode.setPosition(headNode.position.x + 1, 50);
-            // headNode.update();
-            this.planetRootNode.update();
+        this.rootNode.update();
 
-            // head_bg.draw(ctx);
-            // head_frame.draw(ctx);
-            // name_bg.draw(ctx);
-            // playerName.draw(ctx);
-            // coin.draw(ctx);
-            // coinLbl.draw(ctx);
-
-            for(let i = 0; i < this.plantes.length; i++) {
-                this.plantes[i].draw(this.ctx);
-            }
+        for(let i = 0; i < this.renderObjs.length; i++) {
+            this.renderObjs[i].draw(this.ctx);
+        }
     }
 }

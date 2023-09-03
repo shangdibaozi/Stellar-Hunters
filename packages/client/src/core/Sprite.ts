@@ -20,6 +20,7 @@ export class Sprite {
         if(this.img == null || this.isLoadingImg){
             return;
         }
+        
         let width = this.img.width * this.node.scale.x;
         let height = this.img.height * this.node.scale.y;
         let x = this.node.position.x - width * this.node.anchor.x;

@@ -1,3 +1,4 @@
+import { Matrix3 } from "./Matrix2d";
 import { Vec2 } from "./vec";
 
 export class Node {
@@ -39,6 +40,9 @@ export class Node {
 
     public children: Node[] = [];
 
+    matrix: Matrix3 = new Matrix3();
+    degree: number = 0;
+
     public constructor(name: string = '') {
         this.name = name;
     }
@@ -48,10 +52,10 @@ export class Node {
         this.children.push(child);
     }
 
-    public setPosition(x: number, y: number) {
-        this._position.set(x, y);
-        this.isDirty = true;
-    }
+    // public setPosition(x: number, y: number) {
+    //     this._position.set(x, y);
+    //     this.isDirty = true;
+    // }
 
     public setLocalPosition(x: number, y: number) {
         this.localPosition.set(x, y);
@@ -71,8 +75,12 @@ export class Node {
     update() {
         if(this.isDirty) {
             if(this.parent != null) {
-                this._position.x = this.parent.position.x + this.localPosition.x;
-                this._position.y = this.parent.position.y + this.localPosition.y;
+                // this._position.x = this.parent.position.x + this.localPosition.x;
+                // this._position.y = this.parent.position.y + this.localPosition.y;
+                this.parent.matrix.apply(this.localPosition, this._position);
+                
+                this.matrix.set(this.scale.x, this.scale.y, this.degree, this.localPosition.x, this.localPosition.y);
+                Matrix3.multi(this.parent.matrix, this.matrix, this.matrix);
                 
                 this.scale.x *= this.parent.scale.x;
                 this.scale.y *= this.parent.scale.y;
