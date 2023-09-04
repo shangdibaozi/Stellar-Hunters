@@ -25,10 +25,10 @@ export class MainView {
 
     playBtn: Node = null!;
 
-    constructor(canvas: HTMLCanvasElement) {
+    constructor(canvas: HTMLCanvasElement, root: Node) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
-
+        this.rootNode = root;
         this.init();
     }
 
@@ -126,7 +126,8 @@ export class MainView {
         this.rootNode.addChild(this.planetRootNode);
 
         let background = new Sprite('../assets/main/background.png');
-        background.node.setLocalPosition(centerPos.x, centerPos.y);
+        background.node.setAnchor(0, 0);
+        background.node.setLocalPosition(0, 0);
         this.renderObjs.push(background);
         this.rootNode.addChild(background.node);
         
@@ -170,18 +171,18 @@ export class MainView {
         headNode.addChild(name_bg.node);
         headNode.addChild(coin.node);
 
-        this.createSprite('Public', 650, 615, 1);
-        this.createSprite('Private', 1318, 230, 1);
+        this.createSprite('Public', 720, 730, 1);
+        this.createSprite('Private', 1383, 346, 1);
 
-        this.createPlanet('planet_y', 380, 625, 1);
-        this.createPlanet('planet_a', 685, 470, 1);
-        let selectPlanet = this.createPlanet('planet_p', 850, 770, 1);
-        this.createPlanet('planet_select', 850, 770, 1);
-        this.createPlanet('player_1', 1110, 360, 1, 'Starry sky rose');
-        this.createPlanet('player_2', 1560, 280, 1, '1000 resources', 40);
-        this.createPlanet('player_3', 1470, 100, 1, 'Can make money', 40);
-        this.createPlanet('player_4', 1385, 430, 1, 'Super planet', 40);
-        this.createPlanet('player_5', 1130, 114, 1, 'Dig together', 60);
+        this.createPlanet('planet_y', 450, 745, 1);
+        this.createPlanet('planet_a', 745, 583, 1);
+        let selectPlanet = this.createPlanet('planet_p', 920, 880, 1);
+        this.createPlanet('planet_select', 920, 880, 1);
+        this.createPlanet('player_1', 1175, 476, 1, 'Starry sky rose');
+        this.createPlanet('player_2', 1625, 396, 1, '1000 resources', 40);
+        this.createPlanet('player_3', 1535, 216, 1, 'Can make money', 40);
+        this.createPlanet('player_4', 1450, 546, 1, 'Super planet', 40);
+        this.createPlanet('player_5', 1195, 230, 1, 'Dig together', 60);
 
         let markUI = this.createPlanetDesc();
         selectPlanet.addChild(markUI);
