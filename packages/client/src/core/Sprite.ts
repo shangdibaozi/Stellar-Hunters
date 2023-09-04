@@ -26,8 +26,8 @@ export class Sprite {
             return;
         }
         
-        let width = this.img.width * this.node.scale.x;
-        let height = this.img.height * this.node.scale.y;
+        let width = this.img.width * this.node.scaleX
+        let height = this.img.height * this.node.scaleY;
         let x = this.node.position.x - width * this.node.anchor.x;
         let y = this.node.position.y - height * this.node.anchor.y;
         this.node.rect.position.x = x;

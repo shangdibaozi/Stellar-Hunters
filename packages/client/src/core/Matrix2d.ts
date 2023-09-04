@@ -9,6 +9,14 @@ export class Matrix3 {
         return Math.asin(this.elem[1]);
     }
 
+    public get scaleX() {
+        return this.elem[0];
+    }
+
+    public get scaleY() {
+        return this.elem[4];
+    }
+
     public set(sx: number, sy: number, degree: number, tx: number, ty: number) {
         let angle = degree * Matrix3.D2R;
         this.setScale(sx, sy).setRotate(angle).setTranslate(tx, ty);
@@ -16,9 +24,9 @@ export class Matrix3 {
     }
 
 
-    setScale(sx: number, sy: number) {
-        this.elem[0] *= sx;
-        this.elem[4] *= sy;
+    public setScale(sx: number, sy: number) {
+        this.elem[0] = sx;
+        this.elem[4] = sy;
         return this;
     }
 

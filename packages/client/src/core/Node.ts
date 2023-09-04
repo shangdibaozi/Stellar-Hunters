@@ -10,7 +10,21 @@ export class Node {
         return this._position;
     }
     localPosition: Vec2 = Vec2.zero();
-    scale: Vec2 = Vec2.one();
+    _scale: Vec2 = Vec2.one();
+    public set scale(val: number) {
+        if(this._scale.x == val && this._scale.y == val) {
+            return;
+        }
+        this._scale.x = val;
+        this._scale.y = val;
+        this.matrix.setScale(val, val);
+    }
+    public get scaleX() {
+        return this.matrix.scaleX;
+    }
+    public get scaleY() {
+        return this.matrix.scaleY;
+    }
     /**
      * canvas的坐标原点在左上角，且y轴向下为正方向。所以y为0表示y轴锚点在顶部，1为在底部
      */
@@ -76,7 +90,7 @@ export class Node {
     }
 
     public setScale(x: number, y: number) {
-        this.scale.set(x, y);
+        this._scale.set(x, y);
         this.isDirty = true;
     }
 
@@ -87,16 +101,13 @@ export class Node {
 
     update() {
         if(this.isDirty) {
+            this.matrix.set(this._scale.x, this._scale.y, this._degree, this.localPosition.x, this.localPosition.y);
             if(this.parent != null) {
-                // this._position.x = this.parent.position.x + this.localPosition.x;
-                // this._position.y = this.parent.position.y + this.localPosition.y;
                 this.parent.matrix.apply(this.localPosition, this._position);
-                
-                this.matrix.set(this.scale.x, this.scale.y, this._degree, this.localPosition.x, this.localPosition.y);
                 Matrix3.multi(this.parent.matrix, this.matrix, this.matrix);
                 
-                this.scale.x *= this.parent.scale.x;
-                this.scale.y *= this.parent.scale.y;
+                // this.scale.x *= this.parent.scale.x;
+                // this.scale.y *= this.parent.scale.y;
             }
             this.isDirty = false;
             for(let i = 0; i < this.children.length; i++) {
