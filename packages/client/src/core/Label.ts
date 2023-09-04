@@ -23,7 +23,6 @@ export class Label {
 
         if(this.maxWidth > 0) {
             this.calcTexts(ctx);
-            let totalHeight = this.texts.length * textHeight;
             let x = this.node.position.x - this.maxWidth * this.node.anchor.x;
             let startY = this.node.position.y + this.texts.length * textHeight * (1 - this.node.anchor.y);
             for(let i = 0, len = this.texts.length; i < len; i++) {

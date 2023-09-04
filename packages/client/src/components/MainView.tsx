@@ -32,61 +32,91 @@ export class MainView {
         this.init();
     }
 
-    createPlanet(x: number, y: number, scale: number, name: string) {
-        let planet = new Sprite('../assets/main/planet.png');
+    createSprite(imgName: string, x: number, y: number, scale: number) {
+        let planet = new Sprite(`../assets/main/${imgName}.png`);
         planet.node.setLocalPosition(x, y);
         planet.node.setScale(scale, scale);
         this.planetRootNode.addChild(planet.node);
         this.renderObjs.push(planet);
+        return planet.node;
+    }
+
+    createPlanet(imgName: string, x: number, y: number, scale: number, name: string='', nameOffsetY: number = 30) {
+        // let planet = new Sprite(`../assets/main/${imgName}.png`);
+        // planet.node.setLocalPosition(x, y);
+        // planet.node.setScale(scale, scale);
+        // this.planetRootNode.addChild(planet.node);
+        // this.renderObjs.push(planet);
+        let planet = this.createSprite(imgName, x, y, scale);
         if(name.length > 0) {
             let planetName = new Label(name, 22);
             planetName.color = '#ffffff';
             planetName.node.setAnchor(0.5, 0.5);
-            planetName.node.setLocalPosition(0, 110);
-            planet.node.addChild(planetName.node);
+            planetName.node.setLocalPosition(0, nameOffsetY);
+            planet.addChild(planetName.node);
             this.renderObjs.push(planetName);
         }
-        return planet.node;
+        return planet;
     }
 
     createPlanetDesc() {
         let node = new Node();
-        let img1 = new Sprite('../assets/main/mark.png');
-        img1.node.setAnchor(0, 0.5);
-        let lblName = new Label('NAME', 36);
+        node.setLocalPosition(-10, -50);
+
+        let img1 = new Sprite('../assets/main/tip_frame.png');
+        img1.node.setAnchor(0, 0);
+
+        let lblName = new Label('Gamma', 36);
         lblName.node.setAnchor(0.5, 1);
-        lblName.node.setLocalPosition(170, -5);
+        lblName.node.setLocalPosition(190, 13);
+
         let imgFree = new Sprite('../assets/main/FREE.png');
         imgFree.node.setAnchor(0.5, 1);
-        imgFree.node.setLocalPosition(280, -5);
-
-        let imgBoard = new Sprite('../assets/main/board.png');
-        imgBoard.node.setAnchor(0, 0);
-        imgBoard.node.setLocalPosition(90, 10);
+        imgFree.node.setLocalPosition(310, 13);
 
         let playBtnBg = new Sprite('../assets/main/PLAY.png');
-        playBtnBg.node.setLocalPosition(170, 190);
+        playBtnBg.node.setLocalPosition(280, 220);
         this.playBtn = playBtnBg.node;
         
 
-        let desc = new Label('description description description description description description description description description', 22, 280);
-        // let desc = new Label('descriptdes', 22, 111);
+        let desc = new Label('copper ore, iron ore, silver ore,platinum ore, tin ore, titanium ore, shaft ore', 22, 300);
         desc.node.setAnchor(0.5, 0);
-        desc.node.setLocalPosition(170, 50);
+        desc.node.setLocalPosition(280, 90);
+
+        let head = new Sprite('../assets/main/head_icon.png');
+        head.node.setLocalPosition(140, 50);
+
+        let head_count = new Label('1000', 22);
+        head_count.node.setAnchor(0, 0.5);
+        head_count.node.setLocalPosition(10, 0);
+
+        let clock = new Sprite('../assets/main/clock_icon.png');
+        clock.node.setLocalPosition(360, 50);
+
+        let clock_number = new Label('00:00', 22);
+        clock_number.node.setAnchor(0, 1);
+        clock_number.node.setLocalPosition(15, 9);
 
         this.renderObjs.push(img1);
         this.renderObjs.push(lblName);
         this.renderObjs.push(imgFree);
-        this.renderObjs.push(imgBoard);
         this.renderObjs.push(playBtnBg);
         this.renderObjs.push(desc);
+        this.renderObjs.push(head);
+        this.renderObjs.push(head_count);
+        this.renderObjs.push(clock);
+        this.renderObjs.push(clock_number);
+
 
         node.addChild(img1.node);
-        imgBoard.node.addChild(playBtnBg.node);
-        imgBoard.node.addChild(desc.node);
-        img1.node.addChild(lblName.node);
-        img1.node.addChild(imgFree.node);
-        img1.node.addChild(imgBoard.node);
+        node.addChild(playBtnBg.node);
+        node.addChild(desc.node);
+        node.addChild(lblName.node);
+        node.addChild(imgFree.node);
+        node.addChild(head.node);
+        head.node.addChild(head_count.node);
+        node.addChild(clock.node);
+        clock.node.addChild(clock_number.node);
         return node;
     }
 
@@ -140,17 +170,35 @@ export class MainView {
         headNode.addChild(name_bg.node);
         headNode.addChild(coin.node);
 
-        this.createPlanet(200, 300, 0.75, '');
-        let selectPlanet = this.createPlanet(340, 450, 0.9, '');
-        this.createPlanet(500, 300, 0.75, '');
-        this.createPlanet(1000, 270, 0.5, 'Planet1');
-        this.createPlanet(1220, 200, 0.5, 'Planet2');
-        this.createPlanet(1040, 540, 0.5, 'Planet3');
-        this.createPlanet(1450, 340, 0.5, 'Planet4');
-        this.createPlanet(1320, 500, 0.5, 'Planet5');
+        this.createSprite('Public', 650, 615, 1);
+        this.createSprite('Private', 1318, 230, 1);
+
+        this.createPlanet('planet_y', 380, 625, 1);
+        this.createPlanet('planet_a', 685, 470, 1);
+        let selectPlanet = this.createPlanet('planet_p', 850, 770, 1);
+        this.createPlanet('planet_select', 850, 770, 1);
+        this.createPlanet('player_1', 1110, 360, 1, 'Starry sky rose');
+        this.createPlanet('player_2', 1560, 280, 1, '1000 resources', 40);
+        this.createPlanet('player_3', 1470, 100, 1, 'Can make money', 40);
+        this.createPlanet('player_4', 1385, 430, 1, 'Super planet', 40);
+        this.createPlanet('player_5', 1130, 114, 1, 'Dig together', 60);
 
         let markUI = this.createPlanetDesc();
         selectPlanet.addChild(markUI);
+
+        let coin1 = this.createSprite('circle_corner_frame', 1600, 30, 1);
+        this.createSprite('U_Coin', 1550, 30, 1);
+        let coin_u_count = new Label('1234567', 22);
+        coin_u_count.node.setLocalPosition(10, 0);
+        this.renderObjs.push(coin_u_count);
+        coin1.addChild(coin_u_count.node);
+
+        let coin2 = this.createSprite('circle_corner_frame', 1800, 30, 1);
+        this.createSprite('Star_Coin', 1750, 30, 1);
+        let coin_star_count = new Label('1234567', 22);
+        coin_star_count.node.setLocalPosition(10, 0);
+        this.renderObjs.push(coin_star_count);
+        coin2.addChild(coin_star_count.node);
     }
 
     public run() {
