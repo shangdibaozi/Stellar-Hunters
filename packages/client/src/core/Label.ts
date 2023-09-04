@@ -18,25 +18,34 @@ export class Label {
         ctx.font = `${this.fontSize}px Arial`;
         ctx.fillStyle = this.color;
         
-        const txtMetrix = ctx.measureText(this.text);
-        const textHeight = txtMetrix.actualBoundingBoxAscent + txtMetrix.actualBoundingBoxDescent;
-
+        let txtMetrix = ctx.measureText(this.text);
+        let textHeight = txtMetrix.actualBoundingBoxAscent + txtMetrix.actualBoundingBoxDescent;
+        
+        let angle = this.node.matrix.angle;
         if(this.maxWidth > 0) {
             this.calcTexts(ctx);
-            let x = this.node.position.x - this.maxWidth * this.node.anchor.x;
-            let startY = this.node.position.y + this.texts.length * textHeight * (1 - this.node.anchor.y);
+            let startY = this.node.position.y - this.texts.length * textHeight * this.node.anchor.y;
             for(let i = 0, len = this.texts.length; i < len; i++) {
-                let y = startY - (len - i) * textHeight;
-                ctx.fillText(this.texts[i], x, y);
+                let y = startY + i * textHeight;
+                ctx.translate(this.node.position.x, y);
+                ctx.scale(this.node.scaleX, this.node.scaleY);
+                
+                ctx.fillText(this.texts[i], - this.maxWidth * this.node.anchor.x, 0);
+                ctx.scale(1 / this.node.scaleX, 1 / this.node.scaleY);
+                ctx.translate(-this.node.position.x, -y);
             }
         }
         else {
             this.node.width = txtMetrix.width;
             this.node.height = textHeight;
 
-            let x = this.node.position.x - this.node.width * this.node.anchor.x;
-            let y = this.node.position.y + this.node.height * (1 - this.node.anchor.y);
-            ctx.fillText(this.text, x, y);
+            ctx.translate(this.node.position.x, this.node.position.y);
+            ctx.scale(this.node.scaleX, this.node.scaleY);
+            // ctx.rotate(angle);  // TODO: 加了旋转位置不对
+            ctx.fillText(this.text, -this.node.width * this.node.anchor.x, this.node.height * (1 - this.node.anchor.y));
+            // ctx.rotate(-angle);
+            ctx.scale(1 / this.node.scaleX, 1 / this.node.scaleY);
+            ctx.translate(-this.node.position.x, -this.node.position.y);
         }
     }
 
