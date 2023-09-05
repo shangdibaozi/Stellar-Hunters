@@ -119,6 +119,8 @@ export class GameView {
         this.createItemLine(0, 260, frame);
         this.createItemLine(0, 360, frame);
 
+        this.createSprite('drill', 300, 540, 0, 1, this.rootNode);
+
         this.createLabel('Mining in progress', 30, 300, 570, 0, 0, '#ffffff', this.rootNode);
         this.createLabel('0 0 : 0 0 : 0 0', 30, 330, 610, 0, 0, '#ffffff', this.rootNode);
         let line3 = this.createSprite('line', 300, 640, 0, 0, this.rootNode);
