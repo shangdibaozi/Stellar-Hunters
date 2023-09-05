@@ -74,16 +74,30 @@ export const App = () => {
         let gameView = new GameView(canvas, root);
 
         canvas.addEventListener('pointerdown', (event) => {
-            // console.log('pointerdown', event);
-            mainView.onMouseDown(event.clientX, event.clientY);
+            if(Global.currView === View.Main) {
+                mainView.onMouseDown(event.clientX, event.clientY);
+            }
+            else if(Global.currView == View.Game) {
+                gameView.onMouseDown(event.clientX, event.clientY);
+            }
         });
 		canvas.addEventListener('pointermove', (event) => {
-            // console.log('pointermove', event);
             mainView.onMouseMove(event.clientX, event.clientY);
+            if(Global.currView === View.Main) {
+                mainView.onMouseMove(event.clientX, event.clientY);
+            }
+            else if(Global.currView == View.Game) {
+                gameView.onMouseMove(event.clientX, event.clientY);
+            }
         });
 		canvas.addEventListener('pointerup', (event) => {
             // console.log('pointerup', event);
-            mainView.onMouseUp(event.clientX, event.clientY);
+            if(Global.currView === View.Main) {
+                mainView.onMouseUp(event.clientX, event.clientY);
+            }
+            else if(Global.currView == View.Game) {
+                gameView.onMouseUp(event.clientX, event.clientY);
+            }
         });
 
         //窗口大小改变监听
@@ -93,8 +107,8 @@ export const App = () => {
 
         let gameLoop = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // ctx.fillStyle = 'black';
+            // ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             if(Global.currView === View.Main) {
                 mainView.run();
