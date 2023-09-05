@@ -13,6 +13,8 @@ export class GameView {
 
     btnReturn: Node = null!;
 
+    resultNode: Node = new Node();
+
     constructor(canvas: HTMLCanvasElement, root: Node) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
@@ -31,6 +33,15 @@ export class GameView {
 
     createSpriteMain(imgName: string, x: number, y: number, ax: number, ay: number, parent: Node) {
         let sp = new Sprite(`../assets/main/${imgName}.png`);
+        sp.node.setAnchor(ax, ay);
+        sp.node.setLocalPosition(x, y);
+        parent.addChild(sp.node);
+        this.renderObjs.push(sp);
+        return sp.node;
+    }
+
+    createSpriteResult(imgName: string, x: number, y: number, ax: number, ay: number, parent: Node) {
+        let sp = new Sprite(`../assets/result/${imgName}.png`);
         sp.node.setAnchor(ax, ay);
         sp.node.setLocalPosition(x, y);
         parent.addChild(sp.node);
@@ -129,6 +140,36 @@ export class GameView {
         this.createLabel('......', 30, 300, 720, 0, 0, '#ffffff', this.rootNode);
         this.createLabel('No ore body found.', 30, 300, 760, 0, 0, '#ffffff', this.rootNode);
         this.createLabel('Continue to explore...', 30, 300, 830, 0, 0, '#ffffff', this.rootNode);
+
+
+        this.rootNode.addChild(this.resultNode);
+        let result_board = this.createSpriteResult('result_board', 0, 352, 0, 0, this.resultNode);
+        let btn_bg = this.createSpriteResult('btn_bg', 0, 496, 0, 1, result_board);
+        this.createSpriteResult('OK', 1024, -35, 0.5, 0.5, btn_bg);
+        this.createSpriteResult('SETTLEMENT', 1050, 100, 0, 1, result_board);
+        for(let i = 0; i < 8; i++) {
+            this.createItem(1090 + i * step, 150, result_board);
+        }
+        this.createLabel('Your call fee', 30, 1048, 124, 0, 0, '#ffffff', result_board);
+        this.createLabel('20H30MIN', 30, 1220, 124, 0, 0, '#f4bb54', result_board);
+        this.createLabel('get resources', 30, 1370, 117, 0, 0, '#ffffff', result_board);
+
+        this.createSpriteResult('resources', 1050, 320, 0, 0, result_board);
+        this.createSpriteResult('value', 1050, 350, 0, 0, result_board);
+        this.createSpriteResult('consumption', 1050, 390, 0, 0, result_board);
+        this.createSpriteResult('ticketrewards', 1450, 320, 0, 0, result_board);
+        this.createSpriteResult('luckyshare', 1450, 350, 0, 0, result_board);
+        let line4 = this.createSpriteResult('vline', 1410, 300, 0, 0, result_board);
+        line4.setScale(1, 0.8);
+
+        this.createLabel('24', 20, 1350, 324, 0, 0, '#ffffff', result_board);
+        this.createLabel('4.13', 20, 1350, 360, 0, 0, '#ffffff', result_board);
+        this.createLabel('4.13', 20, 1750, 360, 0, 0, '#ffffff', result_board);
+        this.createLabel('4.13', 20, 1750, 324, 0, 0, '#ffffff', result_board);
+
+        this.createSprite('coin2', 1315, 350, 0, 0, result_board);
+        this.createSprite('coin2', 1715, 350, 0, 0, result_board);
+        this.createSprite('coin2', 1715, 314, 0, 0, result_board);
     }
 
     public run() {
