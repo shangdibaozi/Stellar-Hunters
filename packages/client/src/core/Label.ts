@@ -1,51 +1,53 @@
 import { Node } from "./Node";
 
-export class Label {
-    public node: Node = new Node();
+export class Label extends Node {
     public fontSize: number = 20;
     public text: string = '';
     public color: string = '#ffffff';
-    maxWidth: number = 0;
+    public maxWidth: number = 0;
     public texts: string[] = [];
 
-    public constructor(text: string, fontSize: number, maxWidth: number = 0) {
-        this.text = text;
-        this.fontSize = fontSize;
-        this.maxWidth = maxWidth;
-    }
+    // public constructor(text: string, fontSize: number, maxWidth: number = 0) {
+    //     this.text = text;
+    //     this.fontSize = fontSize;
+    //     this.maxWidth = maxWidth;
+    // }
 
-    public draw(ctx: CanvasRenderingContext2D) {
+    protected render(ctx: CanvasRenderingContext2D) {
+        if(!this.active) {
+            return;
+        }
         ctx.font = `${this.fontSize}px Arial`;
         ctx.fillStyle = this.color;
         
         let txtMetrix = ctx.measureText(this.text);
         let textHeight = txtMetrix.actualBoundingBoxAscent + txtMetrix.actualBoundingBoxDescent;
         
-        let angle = this.node.matrix.angle;
+        let angle = this.matrix.angle;
         if(this.maxWidth > 0) {
             this.calcTexts(ctx);
-            let startY = this.node.position.y - this.texts.length * textHeight * this.node.anchor.y;
+            let startY = this.position.y - this.texts.length * textHeight * this.anchor.y;
             for(let i = 0, len = this.texts.length; i < len; i++) {
                 let y = startY + i * textHeight;
-                ctx.translate(this.node.position.x, y);
-                ctx.scale(this.node.scaleX, this.node.scaleY);
+                ctx.translate(this.position.x, y);
+                ctx.scale(this.scaleX, this.scaleY);
                 
-                ctx.fillText(this.texts[i], - this.maxWidth * this.node.anchor.x, 0);
-                ctx.scale(1 / this.node.scaleX, 1 / this.node.scaleY);
-                ctx.translate(-this.node.position.x, -y);
+                ctx.fillText(this.texts[i], - this.maxWidth * this.anchor.x, 0);
+                ctx.scale(1 / this.scaleX, 1 / this.scaleY);
+                ctx.translate(-this.position.x, -y);
             }
         }
         else {
-            this.node.width = txtMetrix.width;
-            this.node.height = textHeight;
+            this.width = txtMetrix.width;
+            this.height = textHeight;
 
-            ctx.translate(this.node.position.x, this.node.position.y);
-            ctx.scale(this.node.scaleX, this.node.scaleY);
+            ctx.translate(this.position.x, this.position.y);
+            ctx.scale(this.scaleX, this.scaleY);
             // ctx.rotate(angle);  // TODO: 加了旋转位置不对
-            ctx.fillText(this.text, -this.node.width * this.node.anchor.x, this.node.height * (1 - this.node.anchor.y));
+            ctx.fillText(this.text, -this.width * this.anchor.x, this.height * (1 - this.anchor.y));
             // ctx.rotate(-angle);
-            ctx.scale(1 / this.node.scaleX, 1 / this.node.scaleY);
-            ctx.translate(-this.node.position.x, -this.node.position.y);
+            ctx.scale(1 / this.scaleX, 1 / this.scaleY);
+            ctx.translate(-this.position.x, -this.position.y);
         }
     }
 

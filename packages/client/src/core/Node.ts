@@ -70,6 +70,20 @@ export class Node {
 
     rect: Rect = new Rect();
 
+    _active: boolean = true;
+    public get active() {
+        return this._active;
+    }
+    public set active(value: boolean) {
+        if(this._active == value) {
+            return;
+        }
+        this._active = value;
+        this.isDirty = true;
+    }
+
+    queue: Node[] = [];
+
     public constructor(name: string = '') {
         this.name = name;
     }
@@ -99,22 +113,50 @@ export class Node {
         this.isDirty = true;
     }
 
-    update() {
+    updateMatrix() {
         if(this.isDirty) {
             this.matrix.set(this._scale.x, this._scale.y, this._degree, this.localPosition.x, this.localPosition.y);
             if(this.parent != null) {
                 this.parent.matrix.apply(this.localPosition, this._position);
                 Matrix3.multi(this.parent.matrix, this.matrix, this.matrix);
-                
-                // this.scale.x *= this.parent.scale.x;
-                // this.scale.y *= this.parent.scale.y;
-            }
-            this.isDirty = false;
-            for(let i = 0; i < this.children.length; i++) {
-                this.children[i].isDirty = true;
-                this.children[i].update();
             }
         }
+    }
+
+    update(ctx: CanvasRenderingContext2D) {
+        if(!this.active) {
+            return;
+        }
+        this.updateMatrix();
+        this.render(ctx);
+        for(let i = 0; i < this.children.length; i++) {
+            if(this.isDirty) {
+                this.children[i].isDirty = true;
+            }
+        }
+
+        this.isDirty = false;
+    }
+
+    process(ctx: CanvasRenderingContext2D) {
+        this.queue.length = 0;
+        this.queue.push(this);
+        let i = 0;
+        while(i < this.queue.length) {
+            let node = this.queue[i++];
+            for(let j = 0; j < node.children.length; j++) {
+                if(node.children[j].active) {
+                    this.queue.push(node.children[j]);
+                }
+            }
+        }
+        for(let i = 0; i < this.queue.length; i++) {
+            this.queue[i].update(ctx);
+        }
+    }
+
+    protected render(ctx: CanvasRenderingContext2D) {
+
     }
 
     public onClick(event: MouseEvent) {
