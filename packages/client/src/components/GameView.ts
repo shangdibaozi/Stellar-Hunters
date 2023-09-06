@@ -4,59 +4,51 @@ import { Node } from "../core/Node";
 import { Vec2 } from "../core/vec";
 import { Global, View } from "../Global";
 
-export class GameView {
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
-
-    rootNode: Node = new Node();
-    renderObjs: (Sprite|Label)[] = [];
-
+export class GameView extends Node {
     btnReturn: Node = null!;
 
-    resultNode: Node = new Node();
+    returnBtnCallback: Function | null = null;
 
-    constructor(canvas: HTMLCanvasElement, root: Node) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d')!;
-        this.rootNode = root;
-        this.init();
-    }
+    resultNode: Node = new Node('resultNode');
 
+    drill: Node = null!;
+
+    resultBtnOk: Node = null!;
     createSprite(imgName: string, x: number, y: number, ax: number, ay: number, parent: Node) {
-        let sp = new Sprite(`../assets/game/${imgName}.png`);
-        sp.node.setAnchor(ax, ay);
-        sp.node.setLocalPosition(x, y);
-        parent.addChild(sp.node);
-        this.renderObjs.push(sp);
-        return sp.node;
+        let sp = new Sprite();
+        sp.url = `../assets/game/${imgName}.png`;
+        sp.setAnchor(ax, ay);
+        sp.setLocalPosition(x, y);
+        parent.addChild(sp);
+        return sp;
     }
 
     createSpriteMain(imgName: string, x: number, y: number, ax: number, ay: number, parent: Node) {
         let sp = new Sprite(`../assets/main/${imgName}.png`);
-        sp.node.setAnchor(ax, ay);
-        sp.node.setLocalPosition(x, y);
-        parent.addChild(sp.node);
-        this.renderObjs.push(sp);
-        return sp.node;
+        sp.setAnchor(ax, ay);
+        sp.setLocalPosition(x, y);
+        parent.addChild(sp);
+        return sp;
     }
 
     createSpriteResult(imgName: string, x: number, y: number, ax: number, ay: number, parent: Node) {
-        let sp = new Sprite(`../assets/result/${imgName}.png`);
-        sp.node.setAnchor(ax, ay);
-        sp.node.setLocalPosition(x, y);
-        parent.addChild(sp.node);
-        this.renderObjs.push(sp);
-        return sp.node;
+        let sp = new Sprite();
+        sp.url = `../assets/result/${imgName}.png`;
+        sp.setAnchor(ax, ay);
+        sp.setLocalPosition(x, y);
+        parent.addChild(sp);
+        return sp;
     }
 
     createLabel(txt: string, fontSize: number, x: number, y: number, ax: number, ay: number, color: string, parent: Node) {
-        let lbl = new Label(txt, fontSize);
-        lbl.node.setAnchor(ax, ay);
-        lbl.node.setLocalPosition(x, y);
+        let lbl = new Label();
+        lbl.text = txt;
+        lbl.fontSize = fontSize;
+        lbl.setAnchor(ax, ay);
+        lbl.setLocalPosition(x, y);
         lbl.color = color;
-        this.renderObjs.push(lbl);
-        parent.addChild(lbl.node);
-        return lbl.node;
+        parent.addChild(lbl);
+        return lbl;
     }
 
     createItem(x: number, y: number, parent: Node) {
@@ -85,21 +77,22 @@ export class GameView {
     }
 
     init() {
-        this.createSprite('background', 0, 0, 0, 0, this.rootNode);
-        this.createSprite('position', 0, 0, 0, 0, this.rootNode);
-        this.btnReturn = this.createSprite('btn_return', 50, 20, 0, 0, this.rootNode);
-        let f = this.createSpriteMain('circle_corner_frame', 250, 20, 0, 0, this.rootNode);
+        this.createSprite('background', 0, 0, 0, 0, this);
+        this.createSprite('position', 0, 0, 0, 0, this);
+        this.btnReturn = this.createSprite('btn_return', 50, 20, 0, 0, this);
+        let f = this.createSpriteMain('circle_corner_frame', 250, 20, 0, 0, this);
         this.createLabel('WASP-21-C', 20, 35, 20, 0, 0.5, '#ffffff', f);
 
-        let coin2 = this.createSpriteMain('circle_corner_frame', 1940, 40, 0.5, 0.5, this.rootNode);
-        this.createSpriteMain('Star_Coin', 1890, 28, 0.5, 0, this.rootNode);
-        let coin_star_count = new Label('1234567', 22);
-        coin_star_count.node.setLocalPosition(10, 0);
-        this.renderObjs.push(coin_star_count);
-        coin2.addChild(coin_star_count.node);
+        let coin2 = this.createSpriteMain('circle_corner_frame', 1940, 40, 0.5, 0.5, this);
+        this.createSpriteMain('Star_Coin', 1890, 28, 0.5, 0, this);
+        let coin_star_count = new Label();
+        coin_star_count.text = '1234567';
+        coin_star_count.fontSize = 22;
+        coin_star_count.setLocalPosition(10, 0);
+        coin2.addChild(coin_star_count);
 
 
-        let line = this.createSprite('line', 1050, 250, 0, 0, this.rootNode);
+        let line = this.createSprite('line', 1050, 250, 0, 0, this);
         this.createSprite('Overview', 20, -70, 0, 0, line);
         this.createLabel('00:00:00', 36, 780, -50, 0, 0, '#A2FFF1', line);
         this.createSprite('Quantity', 20, 40, 0, 1, line).scale = 1.4;
@@ -109,14 +102,14 @@ export class GameView {
         this.createLabel('4.13', 25, 520, 19, 0, 0, '#E5FFFB', line);
         this.createSprite('Durable', 680, 40, 0, 1, line).scale = 1.4;
         this.createLabel('88%', 25, 870, 19, 0, 0, '#A2FFF1', line);
-        let line1 = this.createSprite('line', 1050, 310, 0, 0, this.rootNode);
+        let line1 = this.createSprite('line', 1050, 310, 0, 0, this);
 
         let step = 800 / 7;
         for(let i = 0; i < 8; i++) {
             this.createItem(70 + i * step, 0, line1);
         }
 
-        let frame = this.createSprite('right_frame', 1060, 650, 0, 0, this.rootNode);
+        let frame = this.createSprite('right_frame', 1060, 650, 0, 0, this);
         let line2 = this.createSprite('line', 0, -10, 0, 0, frame);
         this.createSprite('Time', 200, 40, 0, 0, frame);
         this.createSprite('Value', 370, 40, 0, 0, frame);
@@ -130,22 +123,22 @@ export class GameView {
         this.createItemLine(0, 260, frame);
         this.createItemLine(0, 360, frame);
 
-        this.createSprite('drill', 300, 540, 0, 1, this.rootNode);
+        this.drill = this.createSprite('drill', 300, 540, 0, 1, this);
 
-        this.createLabel('Mining in progress', 30, 300, 570, 0, 0, '#ffffff', this.rootNode);
-        this.createLabel('0 0 : 0 0 : 0 0', 30, 330, 610, 0, 0, '#ffffff', this.rootNode);
-        let line3 = this.createSprite('line', 300, 640, 0, 0, this.rootNode);
+        this.createLabel('Mining in progress', 30, 300, 570, 0, 0, '#ffffff', this);
+        this.createLabel('0 0 : 0 0 : 0 0', 30, 330, 610, 0, 0, '#ffffff', this);
+        let line3 = this.createSprite('line', 300, 640, 0, 0, this);
         line3.setScale(0.25, 1);
-        this.createLabel('Discovery of Pit No.1 for exploration...', 30, 300, 660, 0, 0, '#ffffff', this.rootNode);
-        this.createLabel('......', 30, 300, 720, 0, 0, '#ffffff', this.rootNode);
-        this.createLabel('No ore body found.', 30, 300, 760, 0, 0, '#ffffff', this.rootNode);
-        this.createLabel('Continue to explore...', 30, 300, 830, 0, 0, '#ffffff', this.rootNode);
+        this.createLabel('Discovery of Pit No.1 for exploration...', 30, 300, 660, 0, 0, '#ffffff', this);
+        this.createLabel('......', 30, 300, 720, 0, 0, '#ffffff', this);
+        this.createLabel('No ore body found.', 30, 300, 760, 0, 0, '#ffffff', this);
+        this.createLabel('Continue to explore...', 30, 300, 830, 0, 0, '#ffffff', this);
 
 
-        this.rootNode.addChild(this.resultNode);
+        this.addChild(this.resultNode);
         let result_board = this.createSpriteResult('result_board', 0, 352, 0, 0, this.resultNode);
-        let btn_bg = this.createSpriteResult('btn_bg', 0, 496, 0, 1, result_board);
-        this.createSpriteResult('OK', 1024, -35, 0.5, 0.5, btn_bg);
+        this.resultBtnOk = this.createSpriteResult('btn_bg', 0, 496, 0, 1, result_board);
+        this.createSpriteResult('OK', 1024, -35, 0.5, 0.5, this.resultBtnOk);
         this.createSpriteResult('SETTLEMENT', 1050, 100, 0, 1, result_board);
         for(let i = 0; i < 8; i++) {
             this.createItem(1090 + i * step, 150, result_board);
@@ -170,20 +163,21 @@ export class GameView {
         this.createSprite('coin2', 1315, 350, 0, 0, result_board);
         this.createSprite('coin2', 1715, 350, 0, 0, result_board);
         this.createSprite('coin2', 1715, 314, 0, 0, result_board);
-    }
 
-    public run() {
-        this.rootNode.update();
-
-        for(let i = 0; i < this.renderObjs.length; i++) {
-            this.renderObjs[i].draw(this.ctx);
-        }
+        this.resultNode.active = false;
     }
 
     public onMouseDown(x: number, y: number) {
         if(this.btnReturn.rect.intersect(x, y)) {
-            console.log('---');
-            Global.currView = View.Main;
+            if(this.returnBtnCallback != null) {
+                this.returnBtnCallback();
+            }
+        }
+        else if(this.resultNode.active && this.resultBtnOk.rect.intersect(x, y)) {
+            this.resultNode.active = false;
+        }
+        else if(this.drill.rect.intersect(x, y)) {
+            this.resultNode.active = true;
         }
     }
 

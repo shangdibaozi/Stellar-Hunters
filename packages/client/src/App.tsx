@@ -70,8 +70,26 @@ export const App = () => {
         //     console.log('---------------------------------');
         // });
         
-        let mainView = new MainView(canvas, root);
-        let gameView = new GameView(canvas, root);
+        let mainView = new MainView();
+        let gameView = new GameView();
+
+        mainView.init();
+        gameView.init();
+
+        mainView.playBtnCallback = () => {
+            Global.currView = View.Game;
+            mainView.active = false;
+            gameView.active = true;
+        };
+        gameView.returnBtnCallback = () => {
+            Global.currView = View.Main;
+            mainView.active = true;
+            gameView.active = false;
+        };
+
+        root.addChild(mainView);
+        root.addChild(gameView);
+        gameView.active = false;
 
         canvas.addEventListener('pointerdown', (event) => {
             if(Global.currView === View.Main) {
@@ -110,12 +128,13 @@ export const App = () => {
             // ctx.fillStyle = 'black';
             // ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            if(Global.currView === View.Main) {
-                mainView.run();
-            }
-            else if(Global.currView === View.Game) {
-                gameView.run();
-            }
+            // if(Global.currView === View.Main) {
+            //     mainView.run();
+            // }
+            // else if(Global.currView === View.Game) {
+            //     gameView.run();
+            // }
+            root.process(ctx);
         }
 
         const interval = setInterval(gameLoop, 1000 / 30);
